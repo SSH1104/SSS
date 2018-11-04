@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace与mapper接口名称一致 包名+接口名 -->
+<mapper namespace="cn.bdqn.ssm.mapper.BillMapper">
+
+	<!-- 查找总记录数 -->
+	<select id="getCount" resultType="int">
+		select count(1)
+		from
+		smbms_provider p,smbms_bill b
+		where p.id=b.providerId
+			<if test="pid!=null and pid!=0">
+				and b.providerId =#{pid}
+			</if>
+			<if test="name!=null and name!=''">
+				and b.productName like concat('%',#{name},'%')
+			</if>
+			<if test="ispay!=null and ispay!=0">
+				and b.isPayment =#{ispay}
+			</if>
+	</select>
+
+	<!-- 分页查询 -->
+	<select id="getBillList" resultType="Bill">
+		select b.*,p.proName as providerName
+		from
+		smbms_bill b,smbms_provider p
+		<where>
+			p.id=b.providerId
+			<if test="pid!=null and pid!=0">
+				and b.providerId =#{pid}
+			</if>
+			<if test="name!=null and name!=''">
+				and b.productName like concat('%',#{name},'%')
+			</if>
+			<if test="ispay!=null and ispay!=0">
+				and b.isPayment =#{ispay}
+			</if>
+			order by creationDate desc
+			limit #{from},#{pageSize}
+		</where>
+	</select>
+
+</mapper>

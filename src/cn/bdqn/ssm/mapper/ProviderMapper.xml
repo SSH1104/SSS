@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace与mapper接口名称一致 包名+接口名 -->
+<mapper namespace="cn.bdqn.ssm.mapper.ProviderMapper">
+
+	<!-- 查找总记录数 -->
+	<select id="getCount" resultType="int">
+		select count(1)
+		from
+		smbms_provider
+		<where>
+			<if test="code!=null and code!=''">
+				proCode like concat('%',#{code},'%')
+			</if>
+			<if test="name!=null and name!=''">
+				and proName like concat('%',#{name},'%')
+			</if>
+		</where>
+	</select>
+
+	<!-- 分页查询 -->
+	<select id="getProviderList" resultType="Provider">
+		select *
+		from
+		smbms_provider
+		<where>
+			<if test="code!=null and code!=''">
+				proCode like concat('%',#{code},'%')
+			</if>
+			<if test="name!=null and name!=''">
+				and proName like concat('%',#{name},'%')
+			</if>
+		</where>
+		order by creationDate desc
+		limit #{from},#{pageSize}
+	</select>
+
+	<select id="getProList" resultType="Provider">
+		select *
+		from
+		smbms_provider
+	</select>
+
+	<insert id="insert" parameterType="Provider" useGeneratedKeys="true"
+		keyProperty="id">
+		INSERT INTO smbms.smbms_provider
+		(proCode, proName,
+		proDesc, proContact, proPhone, proAddress, proFax,
+		createdBy,
+		creationDate)
+		VALUES
+		(#{proCode}, #{proName}, #{proDesc}, #{proContact},
+		#{proPhone}, #{proAddress},
+		#{proFax}, #{createdBy}, #{creationDate})
+
+	</insert>
+
+<select id="getProviderById" resultType="Provider" >
+	select * from smbms.smbms_provider where id = #{id}
+</select>
+
+	<update id="modify" parameterType="Provider">
+		UPDATE smbms.smbms_provider
+		<set>
+			<if test="proCode!=null and proCode!=''">proCode = #{proCode} ,  </if>
+			<if test="proName!=null and proName!=''">proName = #{proName} ,</if>
+			<if test="proDesc!=null and proDesc!=''">proDesc = #{proDesc} , </if>
+			<if test="proContact!=null and proContact!=''">proContact= #{proContact}, </if>
+			<if test="proPhone!=null and proPhone!=''">proPhone = #{proPhone}, </if>
+			<if test="proAddress!=null and proAddress!=''">proAddress =
+				#{proAddress} ,
+			</if>
+			<if test="proFax!=null and proFax!=''">proFax = #{proFax} , </if>
+			<if test="modifyBy!=null and modifyBy!=0">modifyBy = #{modifyBy} , </if>
+			<if test="modifyDate!=null and modifyDate!=''">modifyDate = #{modifyDate}, </if>
+		</set>
+		WHERE
+		id = #{id}
+	</update>
+
+</mapper>
